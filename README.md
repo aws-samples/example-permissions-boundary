@@ -1,4 +1,3 @@
-
 # Example Permissions Boundaries
 
 This repository contains a sample IAM permissions boundary as a starting point for creating your own permissions boundary to meet the security needs of your organization. The IAM permissions boundary sample, when attached to an IAM role, allow it to perform all expected workload tasks without being able to modify the security of its environment.
@@ -7,7 +6,9 @@ The permissions boundary policy sample is just an example, and may allow for mor
 
 ## About Permissions Boundaries
 
-Permissions boundaries are policies that can be attached to IAM users and roles that define their maximum entitlements. IAM permissions boundaries can only deny entitlements with either an implicit (entitlement is not present in the permissions boundary) or explicit (there is a deny statement in the permissions boundary) deny, and cannot be used to grant an entitlement.
+Permissions boundaries are additional IAM policies that can be attached to IAM entities (users and roles), and limit the maximum entitlements of the entity. IAM permissions boundaries can only deny entitlements with either an implicit (entitlement is not present in the permissions boundary) or explicit (there is a deny statement in the permissions boundary) deny, and cannot be used to grant an entitlement.
+
+Permissions boundaries are an IAM policy defined in the just same way as other IAM policies, however when used as a permission boundary the policy will apply constraints to the entity to which they are attached.
 
 To learn more about permissions boundaries, refer to the AWS documentation link below.
 
@@ -27,13 +28,13 @@ When using permissions boundaries, it is helpful to think in terms of three IAM 
 
 - The administrator or cloud operator, who defines the permissions boundary policies and the policies attached to builder principals.
 - The builder, who will be creating subsequent principals for their applications to use. The builder is required to attach permissions boundary policies to all principals that they create.
-- The application, which uses the principals created by the above builder. These are the principals, typically used by an application, that will have the permissions boundary attached.
+- The application, which uses the principals created by the above builder. The application principals have the permissions boundary policy attached by the builder.
 
 To summarise:
 
-- The administrator persona defines a permissions boundary
-- The builder persona is required to use a permissions boundary when creating roles
-- The application persona is restricted by the contents of the permissions boundary
+- The administrator persona defines a permissions boundary policy
+- The builder persona is required to attach the permissions boundary policy to application principals they create
+- The application persona is restricted by the contents of the permissions boundary policy
 
 The following sections will refer to these personas for simplicity.
 
