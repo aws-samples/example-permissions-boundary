@@ -13,11 +13,11 @@ To learn more about permissions boundaries, refer to the AWS documentation link 
 
 ## The use case for Permissions Boundaries
 
-Organizations want to empower builders to take self service actions in AWS to build with more speed and agility. However, granting the ability to create and modify IAM roles and policies may lead to a builder raising their level of privilege for themselves or their applications beyond what was intended.
+Organizations would like to empower their builders to take self service actions in AWS to build with more speed and agility. However, granting the ability to create and modify IAM roles and policies may lead to a builder raising their level of privilege for themselves or their applications beyond their organizational security requirements.
 
-For example, when a builder wishes to deploy a Lambda function, a corresponding IAM principal is required to be defined for the Lambda function execution role. Permissions boundaries provide a safe and scalable mechanism for an organisation to delegate that responsibility to their builders, and to ensure that the created principals adhere to a defined security policy.
+For example, when a builder wishes to deploy a Lambda function, a corresponding IAM principal is required to be defined for the Lambda function execution role. Permissions boundaries provide a safe and scalable mechanism for an organization to delegate that responsibility to their builders, and to ensure that the created principals adhere to a defined security policy.
 
-Specifically, permissions boundaries are the mechanism to provide builders self-service access to create, modify, and update other IAM principals and policies without escalating their level of entitlements in an AWS environment beyond what is defined. 
+Specifically, permissions boundaries are the preferred IAM mechanism to provide builders self-service access to create, modify, and update other IAM principals and policies, and to limit the permissions of the created principal to those defined in the permissions boundary policy.
 
 ## Using Permissions Boundaries
 
@@ -27,13 +27,21 @@ When using permissions boundaries, it is helpful to think in terms of three IAM 
 
 - The administrator or cloud operator, who defines the permissions boundary policies and the policies attached to builder principals.
 - The builder, who will be creating subsequent principals for their applications to use. The builder is required to attach permissions boundary policies to all principals that they create.
-- Any principals created by the above builder. These are the principals, typically used by an application, that will have the permissions boundary attached.
+- The application, which uses the principals created by the above builder. These are the principals, typically used by an application, that will have the permissions boundary attached.
+
+To summarise:
+
+- The administrator persona defines a permissions boundary
+- The builder persona is required to use a permissions boundary when creating roles
+- The application persona is restricted by the contents of the permissions boundary
+
+The following sections will refer to these personas for simplicity.
 
 ### Ensuring the permissions boundary policies are used
 
-IAM permissions boundaries can be enforced during the creation and modification of IAM roles by using IAM conditions. 
+IAM permissions boundaries, created by the administrator persona, can be enforced during the creation and modification of IAM roles by using IAM conditions. 
 
-For example, the following policy, when attached to our builder persona, ensures that the builder is able to create, modify, and update roles, *but only* when a specified permissions boundary policy is attached to the new role.
+For example, the following IAM policy, when attached to our builder persona, ensures that the builder is able to create, modify, and update roles, *but only* when a specified permissions boundary policy is attached to the new role.
 
 
 ```json
@@ -74,7 +82,7 @@ For example, the following policy, when attached to our builder persona, ensures
 }
 ```
 
-When this policy is attached to a builder principal or persona, they will be required to attach `arn:aws:iam::*:policy/permissionboundarypolicy` whenever they create roles or specify policies to attach to a role. They will also be unable to make changes to `arn:aws:iam::*:policy/permissionboundarypolicy`.
+By attaching this policy to the builder persona, they will be required to attach `arn:aws:iam::*:policy/permissionboundarypolicy` whenever they create roles or specify policies to attach to a role for use by their application. They will also be unable to make changes to `arn:aws:iam::*:policy/permissionboundarypolicy`, the permissions boundary policy itself.
 
 Wildcarding the account number with '*' in the "Resource" element of an IAM policy is safe for actions in the "iam:" namespace, as IAM resources can only ever be modified within the same AWS account. This means the above policy examples can be used without updating the ARNs for a specific account ID. Wildcarding account numbers in other namespaces/resources may grant entitlement to resources in other AWS accounts if they are configured for cross account access.
 
@@ -134,7 +142,7 @@ More information about IAM paths can be found in the the AWS documentation link 
 
 Using the two above example policies, attached to our builder personas, ensure that builders:
 
-- Are always required to use predefined permissions boundary policies when modifying IAM roles,
+- Are always required to use predefined permissions boundary policies when creating or modifying IAM roles used by an application
 - Are only able to modify IAM resources in specific paths 
 
 The combination of these two achieves our goal of safely delegating IAM tasks to builders in an AWS account.
