@@ -83,7 +83,7 @@ For example, the following IAM policy, when attached to our builder persona, ens
 }
 ```
 
-By attaching this policy to the builder persona, they will be required to attach `arn:aws:iam::*:policy/permissionboundarypolicy` whenever they create roles or specify policies to attach to a role for use by their application. They will also be unable to make changes to `arn:aws:iam::*:policy/permissionboundarypolicy`, the permissions boundary policy itself.
+By attaching this policy to the builder persona, the builder will be required to attach `arn:aws:iam::*:policy/permissionboundarypolicy` whenever they create roles or specify policies to attach to a role for use by their application. The builder will also be unable to make changes to `arn:aws:iam::*:policy/permissionboundarypolicy`, the permissions boundary policy itself.
 
 Wildcarding the account number with '*' in the "Resource" element of an IAM policy is safe for actions in the "iam:" namespace, as IAM resources can only ever be modified within the same AWS account. This means the above policy examples can be used without updating the ARNs for a specific account ID. Wildcarding account numbers in other namespaces/resources may grant entitlement to resources in other AWS accounts if they are configured for cross account access.
 
