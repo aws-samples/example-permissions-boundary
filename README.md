@@ -1,9 +1,9 @@
 
 # Example Permissions Boundaries
 
-This repository contains a sample IAM permissions boundary as a starting point for creating your own permissions boundary to meet the security needs of your organization. These IAM permissions boundary samples, when attached to an IAM role, allow it to perform all expected workload tasks without being able to modify the security of its environment.
+This repository contains a sample IAM permissions boundary as a starting point for creating your own permissions boundary to meet the security needs of your organization. The IAM permissions boundary sample, when attached to an IAM role, allow it to perform all expected workload tasks without being able to modify the security of its environment.
 
-This policy sample is just an example, and may allow for more access than you intend your application roles to have. You should remove any unnecessary entitlements for your applications in the spirit of least-privileged access.
+The permissions boundary policy sample is just an example, and may allow for more access than you intend your application roles to have. You should remove any unnecessary entitlements for your applications in the spirit of least-privileged access.
 
 ## About Permissions Boundaries
 
@@ -13,23 +13,27 @@ To learn more about permissions boundaries, refer to the AWS documentation link 
 
 ## The use case for Permissions Boundaries
 
-Organizations want to empower developers to take self service actions in AWS to build with more speed and agility. However, granting the ability to create and modify IAM roles and policies may lead to a developer raising their level of privilege for themselves or their applications beyond what was intended.
+Organizations want to empower builders to take self service actions in AWS to build with more speed and agility. However, granting the ability to create and modify IAM roles and policies may lead to a builder raising their level of privilege for themselves or their applications beyond what was intended.
 
-IAM permissions boundaries can be enforced when creating and modifying IAM roles through IAM conditions to ensure that the role cannot be modified with a level of entitlement beyond what is specified in the permissions boundary. Typically, the permissions boundary contains actions that an application may take, like s3:GetObject, but not operations that would allow a role to modify the security of its own environment such as ec2:AuthorizeSecurityGroupEgress. 
+For example, when a builder wishes to deploy a Lambda function, a corresponding IAM principal is required to be defined for the Lambda function execution role. Permissions boundaries provide a safe and scalable mechanism for an organisation to delegate that responsibility to their builders, and to ensure that the created principals adhere to a defined security policy.
+
+Specifically, permissions boundaries are the mechanism to provide builders self-service access to create, modify, and update other IAM principals and policies without escalating their level of entitlements in an AWS environment beyond what is defined. 
 
 ## Using Permissions Boundaries
 
-Permissions boundaries should primarily be used to enable builders self-service access to create, modify, and update IAM principals and policies without escalating their level of entitlements in an AWS environment beyond what is intended. For example, when a builder wishes to deploy a Lambda function, a corresponding IAM principal is required to be defined for the Lambda function execution role. Permission boundaries provide a safe and scalable mechanism for an organisation to delegate that responsibility to their builders, and to ensure that the created principals adhere to a defined security policy.
+Typically a permissions boundary policy contains actions that an created role may perform, like s3:GetObject, but not operations that would allow a role to modify the security of its own environment such as ec2:AuthorizeSecurityGroupEgress. 
 
 When using permissions boundaries, it is helpful to think in terms of three IAM principals, or personas:
 
-- The administrator or cloud operator, who defines the permission boundary policies and the policies attached to builder principals.
-- The builder, who will be creating subsequent principals for their applications to use. The builder is required to attach permission boundaries to all principals that they create.
-- Any principals created by the above builder. These are the principals, typically used by an application, that will have the permission boundary attached.
+- The administrator or cloud operator, who defines the permissions boundary policies and the policies attached to builder principals.
+- The builder, who will be creating subsequent principals for their applications to use. The builder is required to attach permissions boundary policies to all principals that they create.
+- Any principals created by the above builder. These are the principals, typically used by an application, that will have the permissions boundary attached.
 
-### Ensuring permission boundaries are used
+### Ensuring the permissions boundary policies are used
 
-For example, the following policy, when attached to our builder persona, ensures that the builder is able to create, modify, and update roles, *but only* when a specified permission boundary policy is attached to the new role.
+IAM permissions boundaries can be enforced during the creation and modification of IAM roles by using IAM conditions. 
+
+For example, the following policy, when attached to our builder persona, ensures that the builder is able to create, modify, and update roles, *but only* when a specified permissions boundary policy is attached to the new role.
 
 
 ```json
@@ -124,13 +128,13 @@ As a best practice, roles used by builders to take actions in self service shoul
 }
 ```
 
-More information about IAM paths can be found in the documentation links section below.
+More information about IAM paths can be found in the the AWS documentation link below.
 
 ### Policy summary
 
 Using the two above example policies, attached to our builder personas, ensure that builders:
 
-- Are always required to use predefined permission boundary policies when modifying IAM roles,
+- Are always required to use predefined permissions boundary policies when modifying IAM roles,
 - Are only able to modify IAM resources in specific paths 
 
 The combination of these two achieves our goal of safely delegating IAM tasks to builders in an AWS account.
