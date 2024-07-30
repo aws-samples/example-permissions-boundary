@@ -27,15 +27,15 @@ Permissions boundaries are the IAM feature to provide builders self-service acce
 
 Permissions boundaries are best for coarse grained access control, limiting what IAM actions can be performed by the IAM role they’re attached to. Least privileged access to specific AWS resources, such as S3 buckets of KMS keys should be managed in resource or IAM policy. Having a wildcard (“*”) in the resource element of a permissions boundary policy does not grant access to all resources, or any resource. This only allows permissions to be granted by other policy types that are capable of granting access (IAM, and resource policies).
 
-1. Only use allow statements in permissions boundaries
+2. Only use allow statements in permissions boundaries
 
 Use only allow statements in your permissions boundary policies. Any IAM action that is not in the allow statements of your permissions boundary will be implicitly denied, and you can deny many more actions using the allow plus implicit deny approach rather than explicitly denying actions while granting access to others in the permissions boundary.
 
-1. Avoid using conditions in permissions boundaries
+3. Avoid using conditions in permissions boundaries
 
 Access conditions, such as those based on source IP address, or Virtual Private Cloud (VPC) ID of the request are best placed in other policy types. If you have a common set of access you want to allow, or deny based on a condition across multiple IAM roles, we recommend using Service Control Policy or Resource Policy to apply that restriction.
 
-1. Avoid using a unique permissions boundary per IAM role
+4. Avoid using a unique permissions boundary per IAM role
 
 Permissions boundaries are ideally reusable across many roles within an AWS account. Managing a unique permissions boundary per IAM Role makes permissions boundary enforcement challenging to scale with service control policy, and introduces additional IAM complexity without a clear benefit. 
 
