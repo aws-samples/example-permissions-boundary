@@ -2,23 +2,45 @@
 
 This repository contains a sample IAM permissions boundary as a starting point for creating your own permissions boundary to meet the security needs of your organization. The IAM permissions boundary sample, when attached to an IAM role, allow it to perform all expected workload tasks without being able to modify the security of its environment.
 
-The permissions boundary policy sample is just an example, and may allow for more access than you intend your application roles to have. You should remove any unnecessary entitlements for your applications in the spirit of least-privileged access.
+The permissions boundary policy sample is just an example, and may allow for more access than you intend your application roles to have. You should remove any unnecessary permissions for your applications in the spirit of least-privileged access.
 
 ## About Permissions Boundaries
 
-Permissions boundaries are additional IAM policies that can be attached to IAM entities (users and roles), and limit the maximum entitlements of the entity. IAM permissions boundaries can only deny entitlements with either an implicit (entitlement is not present in the permissions boundary) or explicit (there is a deny statement in the permissions boundary) deny, and cannot be used to grant an entitlement.
+Permissions boundaries are additional IAM policies that can be attached to IAM principals (users and roles), and limit the maximum entitlements of the entity. IAM permissions boundaries can only deny entitlements with either an implicit (entitlement is not present in the permissions boundary) or explicit (there is a deny statement in the permissions boundary) deny, and cannot be used to grant an entitlement. 
 
-Permissions boundaries are an IAM policy defined in the just same way as other IAM policies, however when used as a permission boundary the policy will apply constraints to the entity to which they are attached.
+Permissions boundaries are an IAM policy defined in the just same way as other IAM policies, however when used as a permission boundary the policy will apply constraints to the principal to which they are attached.
 
 To learn more about permissions boundaries, refer to the AWS documentation link below.
 
 ## The use case for Permissions Boundaries
 
-Organizations would like to empower their builders to take self service actions in AWS to build with more speed and agility. However, granting the ability to create and modify IAM roles and policies may lead to a builder raising their level of privilege for themselves or their applications beyond their organizational security requirements.
+Organizations would like to empower their builders to take self service actions in AWS to build with more speed and agility. However, granting the ability to create and modify IAM roles and policies may lead to a builder gaining more privilege for themselves or their applications beyond what was originally intended.
 
-For example, when a builder wishes to deploy a Lambda function, a corresponding IAM principal is required to be defined for the Lambda function execution role. Permissions boundaries provide a safe and scalable mechanism for an organization to delegate that responsibility to their builders, and to ensure that the created principals adhere to a defined security policy.
+For example when a builder wishes to deploy a Lambda function, a corresponding IAM role is required to be defined as the Lambda function’s execution role. Permissions boundaries provide a safe and scalable mechanism for an organization to delegate IAM self service actions to their builders, and to help ensure that the created IAM roles adhere to their defined security requirements.
 
-Specifically, permissions boundaries are the preferred IAM mechanism to provide builders self-service access to create, modify, and update other IAM principals and policies, and to limit the permissions of the created principal to those defined in the permissions boundary policy.
+Permissions boundaries are the IAM feature to provide builders self-service access to create, modify, and update IAM principals and policies without elevating their privilege beyond what is defined in the permission boundary.
+
+## Permissions Boundaries Best Practices
+
+
+1. Do not put resources in permissions boundaries policies
+
+Permissions boundaries are best for coarse grained access control, limiting what IAM actions can be performed by the IAM role they’re attached to. Least privileged access to specific AWS resources, such as S3 buckets of KMS keys should be managed in resource or IAM policy. Having a wildcard (“*”) in the resource element of a permissions boundary policy does not grant access to all resources, or any resource. This only allows permissions to be granted by other policy types that are capable of granting access (IAM, and resource policies).
+
+1. Only use allow statements in permissions boundaries
+
+Use only allow statements in your permissions boundary policies. Any IAM action that is not in the allow statements of your permissions boundary will be implicitly denied, and you can deny many more actions using the allow plus implicit deny approach rather than explicitly denying actions while granting access to others in the permissions boundary.
+
+1. Avoid using conditions in permissions boundaries
+
+Access conditions, such as those based on source IP address, or Virtual Private Cloud (VPC) ID of the request are best placed in other policy types. If you have a common set of access you want to allow, or deny based on a condition across multiple IAM roles, we recommend using Service Control Policy or Resource Policy to apply that restriction.
+
+1. Avoid using a unique permissions boundary per IAM role
+
+Permissions boundaries are ideally reusable across many roles within an AWS account. Managing a unique permissions boundary per IAM Role makes permissions boundary enforcement challenging to scale with service control policy, and introduces additional IAM complexity without a clear benefit. 
+
+If you want to limit the maximum permissions further than just using one permissions boundary, you may consider creating multiple permissions boundary policies that align with different types of applications you may run and have your builders choose the one that is best suited for their application. An example of this would be different permissions boundaries for the different tiers of a 3 tier webapp, and the permissions boundary associated with the IAM role of the EC2 instances of the front end/presentation tier do not allow access to data services, but do allow operational utilities like cloudwatch logging and systems manager. The backend permissions boundary would allow for the possibility of access to be granted to data storage services, such as RDS or S3.
+
 
 ## Using Permissions Boundaries
 
