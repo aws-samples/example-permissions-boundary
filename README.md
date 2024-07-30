@@ -12,6 +12,8 @@ Permissions boundaries are an IAM policy defined in the just same way as other I
 
 To learn more about permissions boundaries, refer to the AWS documentation link below.
 
+![A diagram explaining permissions boundaries](permissions_boundary.png)
+
 ## The use case for Permissions Boundaries
 
 Organizations would like to empower their builders to take self service actions in AWS to build with more speed and agility. However, granting the ability to create and modify IAM roles and policies may lead to a builder gaining more privilege for themselves or their applications beyond what was originally intended.
@@ -183,4 +185,5 @@ An AWS CloudFormation template for each policy can be found in the /cloudformati
 ## Documentation Links
 
 https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html
+
 https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns
