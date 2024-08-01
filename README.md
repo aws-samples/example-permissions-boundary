@@ -59,7 +59,7 @@ When using permissions boundaries, it is helpful to think in terms of three typi
  **_NOTE:_**  The role used by the builder persona may be used by the builders directly, or may be a role used by the builders CI/CD process.
 
 
-![A diagram explaining permissions boundaries](permissions_boundary.png)
+![A diagram explaining permissions boundaries](permissions_boundary_diagram.png)
 
 To summarize:
 
